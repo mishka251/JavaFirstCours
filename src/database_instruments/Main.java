@@ -1,6 +1,6 @@
 package database_instruments;
 
-import client_forms.LoginForm;
+import client_forms.MenuForm;
 
 import javax.swing.*;
 import java.sql.SQLException;
@@ -64,15 +64,6 @@ public class Main {
                         new TableColumn("abitur_id", "INTEGER", "REFERENCES abiturient (id)")
                 });
 
-
-        db.createTable("user",
-                new TableColumn[]{
-                        new TableColumn("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT"),
-                        new TableColumn("position", "VARCHAR (100)"),
-                        new TableColumn("login", "VARCHAR (100)"),
-                        new TableColumn("password", "VARCHAR (100)"),
-                });
-
         db.createTable("student_card",
                 new TableColumn[]{
                         new TableColumn("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT"),
@@ -96,41 +87,6 @@ public class Main {
                         new TableColumn("speciality_id", "INTEGER", "REFERENCES speciality (id)"),
                 });
 
-    }
-
-    static void createUsers(PosgtresDB db) throws SQLException {
-//        db.insert("user", new String[]{
-//                        "login",
-//                        "password",
-//                        "position"
-//                },
-//                new Object[]{
-//                        "teacher",
-//                        "teacher",
-//                        "teacher",
-//                });
-
-        db.insert("user", new String[]{
-                        "login",
-                        "password",
-                        "position",
-                },
-                new Object[]{
-                        "decanat",
-                        "decanat",
-                        "decanat",
-                });
-
-        db.insert("user", new String[]{
-                        "login",
-                        "password",
-                        "position",
-                },
-                new Object[]{
-                        "admin",
-                        "admin",
-                        "admin",
-                });
     }
 
     static String getRandomName() {
@@ -271,11 +227,10 @@ public class Main {
         PosgtresDB db = new PosgtresDB();
         db.connect();
         try {
-            db.select("user");
+            db.select("student");
         } catch (Exception _ex) {
             try {
                 Main.createDB(db);
-                Main.createUsers(db);
                 Main.createStudents(db);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -283,6 +238,6 @@ public class Main {
             }
         }
 
-        new LoginForm(db);
+        new MenuForm(db);
     }
 }

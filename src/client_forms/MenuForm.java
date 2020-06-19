@@ -6,11 +6,9 @@ import javax.swing.*;
 
 public class MenuForm extends JFrame {
     PosgtresDB db;
-    long user_id;
 
-    MenuForm(PosgtresDB db, long user_id) {
+    public MenuForm(PosgtresDB db) {
         this.db = db;
-        this.user_id = user_id;
 
         setLayout(null);
         setSize(300, 150);
@@ -40,7 +38,7 @@ public class MenuForm extends JFrame {
     }
 
     void showCards() {
-
+        new DocumentsForm(db);
     }
 
     void showReport() {
