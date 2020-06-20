@@ -112,8 +112,8 @@ public class RaspredForm extends JFrame {
                         abiturNames[j] = tmp3;
 
                         tmp = ab_ids[i];
-                        ab_ids[i]=ab_ids[j];
-                        ab_ids[j]=tmp;
+                        ab_ids[i] = ab_ids[j];
+                        ab_ids[j] = tmp;
                     }
                 }
             }
@@ -134,8 +134,8 @@ public class RaspredForm extends JFrame {
                         abiturNames[j] = tmp2;
 
                         tmp = ab_ids[i];
-                        ab_ids[i]=ab_ids[j];
-                        ab_ids[j]=tmp;
+                        ab_ids[i] = ab_ids[j];
+                        ab_ids[j] = tmp;
                     }
                 }
             }

@@ -226,7 +226,7 @@ class StudZkPanel extends JPanel {
         setLayout(null);
         SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
         String zk_string = no_zk.equals("") ? "" : " ЗК#" + no_zk + " выдана " + sd.format(date);
-        lbl = new JLabel(name + " - " + type + " " + spec + " балл= " + sumBall +  zk_string);
+        lbl = new JLabel(name + " - " + type + " " + spec + " балл= " + sumBall + zk_string);
         lbl.setBounds(0, 0, 450, 20);
         add(lbl);
         setVisible(true);

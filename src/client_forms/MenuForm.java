@@ -12,10 +12,10 @@ public class MenuForm extends JFrame {
         this.db = db;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-getContentPane().setBackground(Color.cyan);
+        getContentPane().setBackground(Color.cyan);
         setLayout(null);
         setSize(300, 150);
-        setTitle("Меню");
+        setTitle("contingent");
         setVisible(true);
 
         JButton btnRaspr = new JButton("Распределение");

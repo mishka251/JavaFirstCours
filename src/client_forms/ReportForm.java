@@ -149,12 +149,12 @@ public class ReportForm extends JFrame {
                         Map<String, ArrayList<Object>> tableAbiturType = db.selectWhere("abiturient_type", "id=" + type_id);
                         String type = (String) tableAbiturType.get("name").get(0);
 
-                        countByType.put(type, 1+countByType.getOrDefault(type, 0));
+                        countByType.put(type, 1 + countByType.getOrDefault(type, 0));
 
                         Map<String, ArrayList<Object>> tableCard = db.selectWhere("student_card", "student_id=" + stud_ids[studInd]);
 
                         String no_zk = (String) tableCard.get("no_zk").get(0);
-                        Date date = new Date((Long)tableCard.get("date").get(0));
+                        Date date = new Date((Long) tableCard.get("date").get(0));
 
                         sb.append(name);
                         sb.append(" ");
