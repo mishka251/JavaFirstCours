@@ -42,15 +42,15 @@ public class RaspredForm extends JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
 
-        JButton btnLoad = new JButton("Load");
+        JButton btnLoad = new JButton("Загрузить");
         btnLoad.setBounds(400, 50, 90, 20);
         add(btnLoad);
 
-        JButton btnSet = new JButton("Set groups");
+        JButton btnSet = new JButton("Распределить");
         btnSet.setBounds(400, 80, 90, 20);
         add(btnSet);
 
-        JButton btnSave = new JButton("Save");
+        JButton btnSave = new JButton("Сохранить");
         btnSave.setBounds(400, 110, 90, 20);
         add(btnSave);
 

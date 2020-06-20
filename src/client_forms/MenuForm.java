@@ -10,6 +10,8 @@ public class MenuForm extends JFrame {
     public MenuForm(PosgtresDB db) {
         this.db = db;
 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setLayout(null);
         setSize(300, 150);
         setTitle("Меню");
@@ -42,7 +44,7 @@ public class MenuForm extends JFrame {
     }
 
     void showReport() {
-
+        new ReportForm(db);
     }
 
 }
