@@ -3,6 +3,7 @@ package client_forms;
 import database_instruments.PosgtresDB;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class MenuForm extends JFrame {
     PosgtresDB db;
@@ -11,7 +12,7 @@ public class MenuForm extends JFrame {
         this.db = db;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+getContentPane().setBackground(Color.cyan);
         setLayout(null);
         setSize(300, 150);
         setTitle("Меню");

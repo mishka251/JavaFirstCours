@@ -25,6 +25,7 @@ public class RaspredForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
+        getContentPane().setBackground(Color.cyan);
         setSize(500, 450);
         try {
             Map<String, ArrayList<Object>> specTable = db.select("speciality");

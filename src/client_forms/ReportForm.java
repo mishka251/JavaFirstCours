@@ -3,12 +3,11 @@ package client_forms;
 import database_instruments.PosgtresDB;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ReportForm extends JFrame {
     PosgtresDB db;
@@ -30,10 +29,10 @@ public class ReportForm extends JFrame {
         setLayout(null);
         setVisible(true);
         setSize(500, 500);
-
+        getContentPane().setBackground(Color.cyan);
         fileChooser = new JFileChooser();
 
-        JLabel lblOldPlan = new JLabel("Старый пдан");
+        JLabel lblOldPlan = new JLabel("Старый план");
         lblOldPlan.setBounds(10, 10, 100, 20);
         add(lblOldPlan);
 
@@ -155,14 +154,21 @@ public class ReportForm extends JFrame {
                         Map<String, ArrayList<Object>> tableCard = db.selectWhere("student_card", "student_id=" + stud_ids[studInd]);
 
                         String no_zk = (String) tableCard.get("no_zk").get(0);
+                        Date date = new Date((Long)tableCard.get("date").get(0));
 
                         sb.append(name);
                         sb.append(" ");
                         sb.append(type);
                         sb.append(" балл ЕГЭ -");
                         sb.append(_ball);
+
                         sb.append(" ЗК# ");
                         sb.append(no_zk);
+                        sb.append("\n");
+
+                        SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
+                        sb.append(" выдана ");
+                        sb.append(sd.format(date));
                         sb.append("\n");
                     }
                 }

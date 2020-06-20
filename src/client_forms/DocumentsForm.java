@@ -4,6 +4,7 @@ import database_instruments.PosgtresDB;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DocumentsForm extends JFrame {
@@ -22,33 +23,18 @@ public class DocumentsForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
-        setSize(500, 450);
-//        try {
-//            Map<String, ArrayList<Object>> specTable = db.select("speciality");
-//            String[] specNames = Arrays.copyOf(specTable.get("name").toArray(), specTable.get("name").size(), String[].class);
-//            specIds = Arrays.copyOf(specTable.get("id").toArray(), specTable.get("id").size(), Integer[].class);
-//
-//            JLabel lblSpec = new JLabel("специальность");
-//            lblSpec.setBounds(10, 10, 100, 20);
-//            add(lblSpec);
-//
-//            spec = new JComboBox<>(specNames);
-//            spec.setBounds(110, 10, 100, 20);
-//            add(spec);
-//        } catch (Exception ex) {
-//            JOptionPane.showMessageDialog(this, ex.getMessage());
-//        }
-
+        setSize(530, 450);
+        getContentPane().setBackground(Color.cyan);
         JButton btnLoad = new JButton("Загрузить");
-        btnLoad.setBounds(400, 50, 90, 20);
+        btnLoad.setBounds(420, 50, 90, 20);
         add(btnLoad);
 
         JButton btnSet = new JButton("Выдать ЗК");
-        btnSet.setBounds(400, 80, 90, 20);
+        btnSet.setBounds(420, 80, 90, 20);
         add(btnSet);
 
         JButton btnSave = new JButton("Сохранить");
-        btnSave.setBounds(400, 110, 90, 20);
+        btnSave.setBounds(420, 110, 90, 20);
         add(btnSave);
 
         abitursPanel = new JPanel();
@@ -57,8 +43,8 @@ public class DocumentsForm extends JFrame {
         scroll = new JScrollPane(abitursPanel);
         add(scroll);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setBounds(10, 50, 300, 250);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setBounds(0, 50, 400, 250);
 
         btnLoad.addActionListener((event) -> loadAbitur());
         btnSet.addActionListener((event) -> setZk());
@@ -75,9 +61,7 @@ public class DocumentsForm extends JFrame {
             Integer[] stud_ids = Arrays.copyOf(specTable.get("id").toArray(), specTable.get("id").size(), Integer[].class);
             Integer[] ab_ids = Arrays.copyOf(specTable.get("abitur_id").toArray(), specTable.get("id").size(), Integer[].class);
 
-            // String[] names = new String[ab_ids.length]; //Arrays.copyOf(specTable.get("name").toArray(), specTable.get("name").size(), String[].class);
-            // String[] surnames = new String[ab_ids.length]; //Arrays.copyOf(specTable.get("surname").toArray(), specTable.get("surname").size(), String[].class);
-            Integer[] types_ids = new Integer[ab_ids.length]; //Arrays.copyOf(specTable.get("type_id").toArray(), specTable.get("type_id").size(), Integer[].class);
+            Integer[] types_ids = new Integer[ab_ids.length];
             String[] abiturNames = new String[ab_ids.length];
             for (int i = 0; i < ab_ids.length; i++) {
                 Map<String, ArrayList<Object>> abTable = db.selectWhere("abiturient", "id=" + ab_ids[i]);
@@ -85,11 +69,6 @@ public class DocumentsForm extends JFrame {
                 abiturNames[i] = abTable.get("surname").get(0) + " " + abTable.get("name").get(0);
                 types_ids[i] = (Integer) abTable.get("type_id").get(0);
             }
-
-
-//            for (int i = 0; i < names.length; i++) {
-//                abiturNames[i] = surnames[i] + " " + names[i];
-//            }
 
 
             for (int i = 0; i < abiturNames.length; i++) {
@@ -116,31 +95,47 @@ public class DocumentsForm extends JFrame {
             }
 
             String[] category = new String[abiturNames.length];
+            String[] spec = new String[abiturNames.length];
+            int[] summBall = new int[abiturNames.length];
+
             for (int i = 0; i < category.length; i++) {
                 Map<String, ArrayList<Object>> type = db.selectWhere("abiturient_type", "id=" + types_ids[i]);
                 category[i] = (String) type.get("name").get(0);
+
+                Map<String, ArrayList<Object>> ab = db.selectWhere("abiturient", "id=" + ab_ids[i]);
+                summBall[i] = (Integer) ab.get("inf_ege").get(0)
+                        + (Integer) ab.get("rus_ege").get(0)
+                        + (Integer) ab.get("math_ege").get(0);
+
+                int spec_id = (Integer) ab.get("spec_id").get(0);
+                Map<String, ArrayList<Object>> specTable2 = db.selectWhere("speciality", "id=" + spec_id);
+                spec[i] = (String) specTable2.get("name").get(0);
             }
 
             String[] no_zk = new String[abiturNames.length];
             Integer[] card_ids = new Integer[abiturNames.length];
+            Date[] dates = new Date[abiturNames.length];
+
             for (int i = 0; i < category.length; i++) {
                 Map<String, ArrayList<Object>> card = db.selectWhere("student_card", "student_id=" + stud_ids[i]);
                 if (card.get("id").size() == 0) {
                     no_zk[i] = "";
                     card_ids[i] = -1;
+                    dates[i] = new Date();
                 } else {
                     no_zk[i] = (String) card.get("no_zk").get(0);
                     card_ids[i] = (Integer) card.get("id").get(0);
+                    dates[i] = new Date((Long) card.get("date").get(0));
                 }
             }
 
             for (int i = 0; i < category.length; i++) {
-                StudZkPanel panel = new StudZkPanel(stud_ids[i], abiturNames[i], category[i], no_zk[i], card_ids[i]);
-                panel.setBounds(10, 40 * i, 250, 30);
+                StudZkPanel panel = new StudZkPanel(stud_ids[i], abiturNames[i], category[i], no_zk[i], card_ids[i], summBall[i], spec[i], dates[i]);
+                panel.setBounds(0, 40 * i, 450, 30);
                 abitursPanel.add(panel);
                 abiturs.add(panel);
             }
-            abitursPanel.setPreferredSize(new Dimension(300, 40 + 30 * category.length));
+            abitursPanel.setPreferredSize(new Dimension(450, 40 + 30 * category.length));
             scroll.setViewportView(abitursPanel);
             repaint();
 
@@ -166,12 +161,12 @@ public class DocumentsForm extends JFrame {
         Date date = new Date();
         try {
 
-            for (int i =0; i<abiturs.size(); i++) {
+            for (int i = 0; i < abiturs.size(); i++) {
                 StudZkPanel panel = abiturs.get(i);
                 if (panel.no_zk.equals("")) {
                     String zkNumber = (date.getYear() % 100) + "13" + formatInt(i);
                     //int ind = r.nextInt(groups.length);
-                    panel.setZk(zkNumber);
+                    panel.setZk(zkNumber, date);
                 }
             }
             repaint();
@@ -215,25 +210,31 @@ class StudZkPanel extends JPanel {
     String no_zk;
 
     int card_id;
+    int sumBall;
+    String spec;
 
-
-    StudZkPanel(int id, String name, String type, String no_zk, int card_id) {
+    StudZkPanel(int id, String name, String type, String no_zk, int card_id, int sumBall, String spec, Date date) {
         super();
         this.id = id;
         this.name = name;
         this.type = type;
         this.card_id = card_id;
         this.no_zk = no_zk;
+        this.sumBall = sumBall;
+        this.spec = spec;
 
         setLayout(null);
-        lbl = new JLabel(name + " - " + type + " " + no_zk);
-        lbl.setBounds(0, 0, 250, 20);
+        SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
+        String zk_string = no_zk.equals("") ? "" : " ЗК#" + no_zk + " выдана " + sd.format(date);
+        lbl = new JLabel(name + " - " + type + " " + spec + " балл= " + sumBall +  zk_string);
+        lbl.setBounds(0, 0, 450, 20);
         add(lbl);
         setVisible(true);
     }
 
-    void setZk(String zk) {
+    void setZk(String zk, Date date) {
         this.no_zk = zk;
-        lbl.setText(name + " - " + type + " - " + " " + no_zk);
+        SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
+        lbl.setText(name + " - " + type + " " + spec + " балл= " + sumBall + " ЗК# " + no_zk + " выдана " + sd.format(date));
     }
 }
