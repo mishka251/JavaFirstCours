@@ -25,6 +25,7 @@ public class RaspredForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
+        setTitle("Формирование групп / «Contingent»");
         getContentPane().setBackground(Color.cyan);
         setSize(500, 450);
         try {
@@ -32,27 +33,27 @@ public class RaspredForm extends JFrame {
             String[] specNames = Arrays.copyOf(specTable.get("name").toArray(), specTable.get("name").size(), String[].class);
             specIds = Arrays.copyOf(specTable.get("id").toArray(), specTable.get("id").size(), Integer[].class);
 
-            JLabel lblSpec = new JLabel("специальность");
-            lblSpec.setBounds(10, 10, 100, 20);
+            JLabel lblSpec = new JLabel("Выберите специальность из списка");
+            lblSpec.setBounds(10, 10, 270, 20);
             add(lblSpec);
 
             spec = new JComboBox<>(specNames);
-            spec.setBounds(110, 10, 100, 20);
+            spec.setBounds(290, 10, 100, 20);
             add(spec);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
 
         JButton btnLoad = new JButton("Загрузить");
-        btnLoad.setBounds(400, 50, 90, 20);
+        btnLoad.setBounds(360, 50, 120, 20);
         add(btnLoad);
 
         JButton btnSet = new JButton("Распределить");
-        btnSet.setBounds(400, 80, 90, 20);
+        btnSet.setBounds(360, 80, 120, 20);
         add(btnSet);
 
         JButton btnSave = new JButton("Сохранить");
-        btnSave.setBounds(400, 110, 90, 20);
+        btnSave.setBounds(360, 110, 120, 20);
         add(btnSave);
 
         abitursPanel = new JPanel();

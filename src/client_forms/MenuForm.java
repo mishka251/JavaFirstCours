@@ -18,15 +18,15 @@ public class MenuForm extends JFrame {
         setTitle("contingent");
         setVisible(true);
 
-        JButton btnRaspr = new JButton("Распределение");
+        JButton btnRaspr = new JButton("Формирование группы");
         btnRaspr.setBounds(50, 10, 200, 20);
         add(btnRaspr);
 
-        JButton btnDocs = new JButton("Учетные карточки");
+        JButton btnDocs = new JButton("Учетные карточки и ЗК");
         btnDocs.setBounds(50, 40, 200, 20);
         add(btnDocs);
 
-        JButton btnReport = new JButton("Отчет");
+        JButton btnReport = new JButton("Формирование отчёта");
         btnReport.setBounds(50, 70, 200, 20);
         add(btnReport);
 

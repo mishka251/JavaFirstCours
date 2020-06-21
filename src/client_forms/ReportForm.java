@@ -28,41 +28,43 @@ public class ReportForm extends JFrame {
         this.db = db;
         setLayout(null);
         setVisible(true);
-        setSize(500, 500);
+        setSize(500, 520);
         getContentPane().setBackground(Color.cyan);
         fileChooser = new JFileChooser();
 
-        JLabel lblOldPlan = new JLabel("Старый план");
-        lblOldPlan.setBounds(10, 10, 100, 20);
+        setTitle("Формирование отчёта / «Contingent»");
+
+        JLabel lblOldPlan = new JLabel("Введите план прошлого года (20)");
+        lblOldPlan.setBounds(10, 10, 200, 20);
         add(lblOldPlan);
 
         oldPlan = new JTextField();
-        oldPlan.setBounds(120, 10, 100, 20);
+        oldPlan.setBounds(10, 30, 100, 20);
         add(oldPlan);
 
-        JLabel lblNewPlan = new JLabel("Новый план");
-        lblNewPlan.setBounds(10, 40, 100, 20);
+        JLabel lblNewPlan = new JLabel("Введите план текущего года (30)");
+        lblNewPlan.setBounds(10, 60, 200, 20);
         add(lblNewPlan);
 
         newPlan = new JTextField();
-        newPlan.setBounds(120, 40, 100, 20);
+        newPlan.setBounds(10, 80, 100, 20);
         add(newPlan);
 
         report = new JTextPane();
-        report.setBounds(10, 70, 400, 300);
+        report.setBounds(10, 120, 400, 300);
 
         scroll = new JScrollPane(report);
         add(scroll);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setBounds(10, 70, 400, 300);
+        scroll.setBounds(10, 120, 400, 300);
 
         JButton btnCreate = new JButton("Создать отчёт");
-        btnCreate.setBounds(10, 420, 140, 20);
+        btnCreate.setBounds(10, 430, 140, 20);
         add(btnCreate);
 
         JButton btnSave = new JButton("Save");
-        btnSave.setBounds(210, 420, 140, 20);
+        btnSave.setBounds(210, 430, 140, 20);
         add(btnSave);
 
         btnCreate.addActionListener((event) -> loadReport());
@@ -94,6 +96,15 @@ public class ReportForm extends JFrame {
     void loadReport() {
         midBall = 0;
         countByType = new HashMap<>();
+        int nowPlanCnt;
+        int oldPlanCnt;
+        try {
+            nowPlanCnt = Integer.parseInt(newPlan.getText());
+            oldPlanCnt = Integer.parseInt(oldPlan.getText());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Не заполнен план или заполнен неверно");
+            return;
+        }
 
         try {
             StringBuilder sb = new StringBuilder();
@@ -194,8 +205,6 @@ public class ReportForm extends JFrame {
                 sb.append(midBall);
                 sb.append("\n");
 
-                int nowPlanCnt = Integer.parseInt(newPlan.getText());
-                int oldPlanCnt = Integer.parseInt(oldPlan.getText());
 
                 sb.append(studs / nowPlanCnt * 100);
                 sb.append("% от плана ");
@@ -214,6 +223,17 @@ public class ReportForm extends JFrame {
     }
 
     void saveReposrt() {
+
+        int nowPlanCnt;
+        int oldPlanCnt;
+        try {
+            nowPlanCnt = Integer.parseInt(newPlan.getText());
+            oldPlanCnt = Integer.parseInt(oldPlan.getText());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Не заполнен план или заполнен неверно");
+            return;
+        }
+
         try {
 
             double studs = 0;
@@ -221,8 +241,6 @@ public class ReportForm extends JFrame {
                 studs += countByType.get(type);
             }
 
-            int nowPlanCnt = Integer.parseInt(newPlan.getText());
-            int oldPlanCnt = Integer.parseInt(oldPlan.getText());
 
             db.insert("spec_report",
                     new String[]{

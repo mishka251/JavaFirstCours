@@ -10,9 +10,6 @@ import java.util.*;
 public class DocumentsForm extends JFrame {
     PosgtresDB db;
 
-    // JComboBox<String> spec;
-    // Integer[] specIds;
-
     ArrayList<StudZkPanel> abiturs;
 
     JScrollPane scroll;
@@ -23,18 +20,34 @@ public class DocumentsForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
-        setSize(530, 450);
+        setTitle("Формирование учетных карточек и ЗК / «Contingent»");
+        setSize(730, 450);
         getContentPane().setBackground(Color.cyan);
-        JButton btnLoad = new JButton("Загрузить");
-        btnLoad.setBounds(420, 50, 90, 20);
+
+        JLabel lblLoad1 = new JLabel("Нажмите, чтобы загрузить данные из БД");
+        lblLoad1.setBounds(420, 30, 270, 20);
+        add(lblLoad1);
+        JLabel lblLoad2 = new JLabel("и сформировать учетные карточки");
+        lblLoad2.setBounds(420, 40, 270, 20);
+        add(lblLoad2);
+
+        JButton btnLoad = new JButton("Сформировать");
+        btnLoad.setBounds(420, 60, 150, 20);
         add(btnLoad);
 
+        JLabel lblSet = new JLabel("Нажмите, чтобы сформировать и выдать ЗК");
+        lblSet.setBounds(420, 90, 270, 20);
+        add(lblSet);
+
         JButton btnSet = new JButton("Выдать ЗК");
-        btnSet.setBounds(420, 80, 90, 20);
+        btnSet.setBounds(420, 110, 150, 20);
         add(btnSet);
 
+        JLabel lblSave = new JLabel("Нажмите, чтобы сохранить данные в БД");
+        lblSave.setBounds(420, 150, 270, 20);
+        add(lblSave);
         JButton btnSave = new JButton("Сохранить");
-        btnSave.setBounds(420, 110, 90, 20);
+        btnSave.setBounds(420, 170, 150, 20);
         add(btnSave);
 
         abitursPanel = new JPanel();
@@ -52,7 +65,6 @@ public class DocumentsForm extends JFrame {
     }
 
     void loadAbitur() {
-        // Integer specId = specIds[this.spec.getSelectedIndex()];
         for (StudZkPanel panel : abiturs) {
             abitursPanel.remove(panel);
         }
@@ -60,6 +72,11 @@ public class DocumentsForm extends JFrame {
             Map<String, ArrayList<Object>> specTable = db.select("student");
             Integer[] stud_ids = Arrays.copyOf(specTable.get("id").toArray(), specTable.get("id").size(), Integer[].class);
             Integer[] ab_ids = Arrays.copyOf(specTable.get("abitur_id").toArray(), specTable.get("id").size(), Integer[].class);
+
+            if (stud_ids.length == 0) {
+                JOptionPane.showMessageDialog(this, "Абитуриенты не распределены");
+                return;
+            }
 
             Integer[] types_ids = new Integer[ab_ids.length];
             String[] abiturNames = new String[ab_ids.length];
@@ -158,6 +175,12 @@ public class DocumentsForm extends JFrame {
     }
 
     void setZk() {
+
+        if (abiturs.size() == 0) {
+            JOptionPane.showMessageDialog(this, "Данные не загружены");
+            return;
+        }
+
         Date date = new Date();
         try {
 
@@ -176,6 +199,10 @@ public class DocumentsForm extends JFrame {
     }
 
     void saveGroups() {
+        if (abiturs.size() == 0) {
+            JOptionPane.showMessageDialog(this, "Данные не загружены");
+            return;
+        }
         try {
             for (StudZkPanel panel : abiturs) {
                 if (panel.card_id == -1) {
