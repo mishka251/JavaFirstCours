@@ -50,10 +50,24 @@ public class Main {
                         new TableColumn("surname", "VARCHAR (100)"),
                         new TableColumn("patronymic", "VARCHAR (100)"),
                         new TableColumn("city", "VARCHAR (100)"),
-                        new TableColumn("math_ege", "INTEGER"),
-                        new TableColumn("rus_ege", "INTEGER"),
-                        new TableColumn("inf_ege", "INTEGER"),
+                        new TableColumn("ball", "INTEGER"),
                         new TableColumn("type_id", "INTEGER", "REFERENCES abiturient_type (id)"),
+                        new TableColumn("spec_id", "INTEGER", "REFERENCES speciality (id)")
+                });
+
+        db.createTable("subject",
+                new TableColumn[]{
+                        new TableColumn("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT"),
+                        new TableColumn("name", "VARCHAR (100)"),
+                });
+
+        db.createTable("teacher",
+                new TableColumn[]{
+                        new TableColumn("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT"),
+                        new TableColumn("name", "VARCHAR (100)"),
+                        new TableColumn("surname", "VARCHAR (100)"),
+                        new TableColumn("patronymic", "VARCHAR (100)"),
+                        new TableColumn("subj_id", "INTEGER", "REFERENCES subject (id)"),
                         new TableColumn("spec_id", "INTEGER", "REFERENCES speciality (id)")
                 });
 
@@ -64,6 +78,14 @@ public class Main {
                         new TableColumn("abitur_id", "INTEGER", "REFERENCES abiturient (id)")
                 });
 
+        db.createTable("raspisanie",
+                new TableColumn[]{
+                        new TableColumn("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT"),
+                        new TableColumn("group_id", "INTEGER", "REFERENCES [group] (id)"),
+                        new TableColumn("teacher_id", "INTEGER", "REFERENCES teacher (id)"),
+                        new TableColumn("para", "INTEGER"),
+                });
+
         db.createTable("student_card",
                 new TableColumn[]{
                         new TableColumn("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT"),
@@ -71,6 +93,7 @@ public class Main {
                         new TableColumn("no_sb", "VARCHAR (100)"),
                         new TableColumn("date", "DATE"),
                         new TableColumn("student_id", "INTEGER", "REFERENCES student (id)"),
+                        new TableColumn("teacher_id", "INTEGER", "REFERENCES teacher (id)"),
                 });
 
         db.createTable("spec_report",
@@ -86,7 +109,6 @@ public class Main {
                         new TableColumn("group_id", "INTEGER", "REFERENCES [group] (id)"),
                         new TableColumn("speciality_id", "INTEGER", "REFERENCES speciality (id)"),
                 });
-
     }
 
     static String getRandomName() {
@@ -100,6 +122,14 @@ public class Main {
     static String getRandomSurname() {
         String[] names = new String[]{
                 "Иванов", "Петров", "Сидоров", "Васильев", "Чернов", "Юсупов"
+        };
+        Random r = new Random();
+        return names[r.nextInt(names.length)];
+    }
+
+    static String getRandomPatronymic() {
+        String[] names = new String[]{
+                "Иванович", "Петрович", "Сидорович", "Васильевич"
         };
         Random r = new Random();
         return names[r.nextInt(names.length)];
@@ -181,17 +211,13 @@ public class Main {
             db.insert("abiturient", new String[]{
                             "name",
                             "surname",
-                            "math_ege",
-                            "rus_ege",
-                            "inf_ege",
+                            "ball",
                             "spec_id",
                             "type_id"
                     },
                     new Object[]{
                             getRandomName(),
                             getRandomSurname(),
-                            30 + r.nextInt(70),
-                            30 + r.nextInt(70),
                             30 + r.nextInt(70),
                             spec1_id,
                             abit_types_id[r.nextInt(abit_types_id.length)]
@@ -202,9 +228,7 @@ public class Main {
             db.insert("abiturient", new String[]{
                             "name",
                             "surname",
-                            "math_ege",
-                            "rus_ege",
-                            "inf_ege",
+                            "ball",
                             "spec_id",
                             "type_id"
                     },
@@ -212,14 +236,67 @@ public class Main {
                             getRandomName(),
                             getRandomSurname(),
                             30 + r.nextInt(70),
-                            30 + r.nextInt(70),
-                            30 + r.nextInt(70),
                             spec2_id,
                             abit_types_id[r.nextInt(abit_types_id.length)]
                     });
         }
+    }
 
+    static void createSubjects(PosgtresDB db) throws SQLException {
+        db.insert("subject",
+                new String[]{
+                        "name"
+                },
+                new Object[]{
+                        "матан"
+                });
 
+        db.insert("subject",
+                new String[]{
+                        "name"
+                },
+                new Object[]{
+                        "физ-ра"
+                });
+    }
+
+    static void createTeacher(PosgtresDB db) throws SQLException {
+        Random r = new Random();
+        for (int i = 0; i < 10; i++) {
+            db.insert("teacher",
+                    new String[]{
+                            "name",
+                            "surname",
+                            "patronymic",
+                            "spec_id",
+                            "subj_id"
+                    },
+                    new Object[]{
+                            getRandomName(),
+                            getRandomSurname(),
+                            getRandomPatronymic(),
+                            1,
+                            r.nextInt(2)
+                    });
+        }
+
+        for (int i = 0; i < 20; i++) {
+            db.insert("teacher",
+                    new String[]{
+                            "name",
+                            "surname",
+                            "patronymic",
+                            "spec_id",
+                            "subj_id"
+                    },
+                    new Object[]{
+                            getRandomName(),
+                            getRandomSurname(),
+                            getRandomPatronymic(),
+                            2,
+                            r.nextInt(2)
+                    });
+        }
     }
 
 
@@ -232,6 +309,8 @@ public class Main {
             try {
                 Main.createDB(db);
                 Main.createStudents(db);
+                createSubjects(db);
+                createTeacher(db);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 return;

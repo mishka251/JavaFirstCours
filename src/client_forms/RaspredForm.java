@@ -79,18 +79,12 @@ public class RaspredForm extends JFrame {
             Map<String, ArrayList<Object>> specTable = db.selectWhere("abiturient", "spec_id=" + specId);
             String[] names = Arrays.copyOf(specTable.get("name").toArray(), specTable.get("name").size(), String[].class);
             String[] surnames = Arrays.copyOf(specTable.get("surname").toArray(), specTable.get("surname").size(), String[].class);
-            Integer[] math_ege = Arrays.copyOf(specTable.get("math_ege").toArray(), specTable.get("math_ege").size(), Integer[].class);
-            Integer[] rus_ege = Arrays.copyOf(specTable.get("rus_ege").toArray(), specTable.get("rus_ege").size(), Integer[].class);
-            Integer[] ing_ege = Arrays.copyOf(specTable.get("inf_ege").toArray(), specTable.get("inf_ege").size(), Integer[].class);
+            Integer[] balls = Arrays.copyOf(specTable.get("ball").toArray(), specTable.get("ball").size(), Integer[].class);
 
             Integer[] types_ids = Arrays.copyOf(specTable.get("type_id").toArray(), specTable.get("type_id").size(), Integer[].class);
             Integer[] ab_ids = Arrays.copyOf(specTable.get("id").toArray(), specTable.get("id").size(), Integer[].class);
 
 
-            Integer[] balls = new Integer[rus_ege.length];
-            for (int i = 0; i < balls.length; i++) {
-                balls[i] = math_ege[i] + rus_ege[i] + ing_ege[i];
-            }
 
             String[] abiturNames = new String[names.length];
             for (int i = 0; i < names.length; i++) {

@@ -7,47 +7,47 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class DocumentsForm extends JFrame {
+public class TeachersForm extends JFrame {
     PosgtresDB db;
 
-    ArrayList<StudZkPanel> abiturs;
+    ArrayList<StudTeacherPanel> abiturs;
 
     JScrollPane scroll;
     JPanel abitursPanel;
 
-    DocumentsForm(PosgtresDB db) {
+    TeachersForm(PosgtresDB db) {
         this.db = db;
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
-        setTitle("Формирование учетных карточек и ЗК / «Contingent»");
-        setSize(730, 450);
+        setTitle("Распределение преподователей / «Contingent»");
+        setSize(780, 550);
         getContentPane().setBackground(Color.cyan);
 
         JLabel lblLoad1 = new JLabel("Нажмите, чтобы загрузить данные из БД");
-        lblLoad1.setBounds(420, 30, 270, 20);
+        lblLoad1.setBounds(10, 320, 270, 20);
         add(lblLoad1);
-        JLabel lblLoad2 = new JLabel("и сформировать учетные карточки");
-        lblLoad2.setBounds(420, 40, 270, 20);
+        JLabel lblLoad2 = new JLabel("и распределить преподовтаелей");
+        lblLoad2.setBounds(10, 340, 270, 20);
         add(lblLoad2);
 
         JButton btnLoad = new JButton("Сформировать");
-        btnLoad.setBounds(420, 60, 150, 20);
+        btnLoad.setBounds(10, 360, 150, 20);
         add(btnLoad);
 
-        JLabel lblSet = new JLabel("Нажмите, чтобы сформировать и выдать ЗК");
-        lblSet.setBounds(420, 90, 270, 20);
+        JLabel lblSet = new JLabel("Нажмите, чтобы распределить");
+        lblSet.setBounds(10, 390, 270, 20);
         add(lblSet);
 
-        JButton btnSet = new JButton("Выдать ЗК");
-        btnSet.setBounds(420, 110, 150, 20);
+        JButton btnSet = new JButton("Распределить");
+        btnSet.setBounds(10, 410, 150, 20);
         add(btnSet);
 
         JLabel lblSave = new JLabel("Нажмите, чтобы сохранить данные в БД");
-        lblSave.setBounds(420, 150, 270, 20);
+        lblSave.setBounds(10, 450, 270, 20);
         add(lblSave);
         JButton btnSave = new JButton("Сохранить");
-        btnSave.setBounds(420, 170, 150, 20);
+        btnSave.setBounds(10, 470, 150, 20);
         add(btnSave);
 
         abitursPanel = new JPanel();
@@ -57,15 +57,15 @@ public class DocumentsForm extends JFrame {
         add(scroll);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setBounds(0, 50, 400, 250);
+        scroll.setBounds(0, 10, 750, 250);
 
         btnLoad.addActionListener((event) -> loadAbitur());
-        btnSet.addActionListener((event) -> setZk());
+        btnSet.addActionListener((event) -> setPrep());
         btnSave.addActionListener((event) -> saveGroups());
     }
 
     void loadAbitur() {
-        for (StudZkPanel panel : abiturs) {
+        for (StudTeacherPanel panel : abiturs) {
             abitursPanel.remove(panel);
         }
         try {
@@ -130,6 +130,8 @@ public class DocumentsForm extends JFrame {
             String[] no_zk = new String[abiturNames.length];
             Integer[] card_ids = new Integer[abiturNames.length];
             Date[] dates = new Date[abiturNames.length];
+            Integer[] teachersId = new Integer[abiturNames.length];
+            String[] teachers = new String[abiturNames.length];
 
             for (int i = 0; i < category.length; i++) {
                 Map<String, ArrayList<Object>> card = db.selectWhere("student_card", "student_id=" + stud_ids[i]);
@@ -137,16 +139,33 @@ public class DocumentsForm extends JFrame {
                     no_zk[i] = "";
                     card_ids[i] = -1;
                     dates[i] = new Date();
+                    teachers[i] = "";
+                    teachersId[i] = -1;
                 } else {
                     no_zk[i] = (String) card.get("no_zk").get(0);
                     card_ids[i] = (Integer) card.get("id").get(0);
                     dates[i] = new Date((Long) card.get("date").get(0));
+                    teachersId[i] = (Integer) card.get("teacher_id").get(0);
+                    if (teachersId[i] == null) {
+                        teachersId[i] = -1;
+                        teachers[i] = "";
+                    } else {
+                        Map<String, ArrayList<Object>> teacherTable = db.selectWhere("teacher", "id=" + teachersId[i]);
+                        teachers[i] =
+                                (String) teacherTable.get("name").get(0)
+                                        + " " + teacherTable.get("patronymic").get(0)
+                                        + " " + teacherTable.get("surname").get(0);
+                    }
+
+
                 }
             }
 
             for (int i = 0; i < category.length; i++) {
-                StudZkPanel panel = new StudZkPanel(stud_ids[i], abiturNames[i], category[i], no_zk[i], card_ids[i], summBall[i], spec[i], dates[i]);
-                panel.setBounds(0, 40 * i, 450, 30);
+                StudTeacherPanel panel = new StudTeacherPanel(stud_ids[i], abiturNames[i], category[i], no_zk[i],
+                        card_ids[i], summBall[i], spec[i], dates[i], teachers[i], teachersId[i]);
+
+                panel.setBounds(0, 40 * i, 750, 30);
                 abitursPanel.add(panel);
                 abiturs.add(panel);
             }
@@ -172,22 +191,46 @@ public class DocumentsForm extends JFrame {
         return Integer.toString(val);
     }
 
-    void setZk() {
+    void setPrep() {
 
         if (abiturs.size() == 0) {
             JOptionPane.showMessageDialog(this, "Данные не загружены");
             return;
         }
 
-        Date date = new Date();
+        Random r = new Random();
         try {
 
+            Map<String, ArrayList<Object>> teachers = db.select("teacher");
+            Map<Integer, Integer> studsForId = new HashMap<>();
+            Map<Integer, String> NamesId = new HashMap<>();
+            Integer[] teachIds = Arrays.copyOf(teachers.get("id").toArray(), teachers.get("id").size(), Integer[].class);
+
+            String[] teachNames = Arrays.copyOf(teachers.get("name").toArray(), teachers.get("name").size(), String[].class);
+            String[] teachSurnames = Arrays.copyOf(teachers.get("surname").toArray(), teachers.get("surname").size(), String[].class);
+            String[] teachPatrs = Arrays.copyOf(teachers.get("patronymic").toArray(), teachers.get("patronymic").size(), String[].class);
+
+
+            for (int i = 0; i < teachIds.length; i++) {
+                int id = teachIds[i];
+                Map<String, ArrayList<Object>> studCards = db.selectWhere("student_card", "teacher_id=" + id);
+                studsForId.put(id, studCards.get("id").size());
+                NamesId.put(id, teachNames[i] + " " + teachPatrs[i] + " " + teachSurnames[i]);
+            }
+
+
             for (int i = 0; i < abiturs.size(); i++) {
-                StudZkPanel panel = abiturs.get(i);
-                if (panel.no_zk.equals("")) {
-                    String zkNumber = (date.getYear() % 100) + "13" + formatInt(i);
-                    //int ind = r.nextInt(groups.length);
-                    panel.setZk(zkNumber, date);
+                StudTeacherPanel panel = abiturs.get(i);
+                if (panel.teacherId == -1) {
+                    int teacherId = teachIds[0];
+                    while (studsForId.get(teacherId) >= 2) {
+                        teacherId = teachIds[r.nextInt(teachIds.length)];
+                    }
+                    panel.setTeacher(NamesId.get(teacherId), teacherId);
+                    studsForId.put(teacherId, studsForId.get(teacherId) + 1);
+//                    String zkNumber = (date.getYear() % 100) + "13" + formatInt(i);
+//                    //int ind = r.nextInt(groups.length);
+//                    panel.setZk(zkNumber, date);
                 }
             }
             repaint();
@@ -202,19 +245,29 @@ public class DocumentsForm extends JFrame {
             return;
         }
         try {
-            for (StudZkPanel panel : abiturs) {
+            for (StudTeacherPanel panel : abiturs) {
                 if (panel.card_id == -1) {
                     db.insert("student_card", new String[]{
                                     "no_zk",
                                     "no_sb",
                                     "date",
-                                    "student_id"
+                                    "student_id",
+                                    "teacher_id"
                             },
                             new Object[]{
                                     panel.no_zk,
                                     panel.no_zk,
                                     new Date(),
-                                    panel.id
+                                    panel.id,
+                                    panel.teacherId,
+                            });
+                } else {
+                    db.update("student_card", "id=" + panel.card_id,
+                            new String[]{
+                                    "teacher_id"
+                            },
+                            new Object[]{
+                                    panel.teacherId
                             });
                 }
 
@@ -226,7 +279,7 @@ public class DocumentsForm extends JFrame {
     }
 }
 
-class StudZkPanel extends JPanel {
+class StudTeacherPanel extends JPanel {
     String name;
     String type;
     int id;
@@ -238,7 +291,12 @@ class StudZkPanel extends JPanel {
     int sumBall;
     String spec;
 
-    StudZkPanel(int id, String name, String type, String no_zk, int card_id, int sumBall, String spec, Date date) {
+    String teacher;
+    int teacherId;
+    Date date;
+
+    StudTeacherPanel(int id, String name, String type, String no_zk, int card_id, int sumBall, String spec, Date date,
+                     String teacher, int teacherId) {
         super();
         this.id = id;
         this.name = name;
@@ -248,18 +306,26 @@ class StudZkPanel extends JPanel {
         this.sumBall = sumBall;
         this.spec = spec;
 
+        this.teacher = teacher;
+        this.teacherId = teacherId;
+
+        this.date = date;
+
         setLayout(null);
         SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
         String zk_string = no_zk.equals("") ? "" : " ЗК#" + no_zk + " выдана " + sd.format(date);
-        lbl = new JLabel(name + " - " + type + " " + spec + " балл= " + sumBall + zk_string);
-        lbl.setBounds(0, 0, 450, 20);
+        String teachStr = teacherId == -1 ? "" : " препоодаватель =" + teacher;
+        lbl = new JLabel(name + " - " + type + " " + spec + " балл= " + sumBall + zk_string + teachStr);
+        lbl.setBounds(0, 0, 750, 20);
         add(lbl);
         setVisible(true);
     }
 
-    void setZk(String zk, Date date) {
-        this.no_zk = zk;
+    void setTeacher(String t, int id) {
+        this.teacher = t;
+        this.teacherId = id;
         SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
-        lbl.setText(name + " - " + type + " " + spec + " балл= " + sumBall + " ЗК# " + no_zk + " выдана " + sd.format(date));
+        lbl.setText(name + " - " + type + " " + spec + " балл= " + sumBall + " ЗК# " + no_zk + " выдана " + sd.format(date)
+                + " препоодаватель =" + teacher);
     }
 }

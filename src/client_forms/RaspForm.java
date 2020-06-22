@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ReportForm extends JFrame {
+public class RaspForm extends JFrame {
     PosgtresDB db;
 
     JTextField oldPlan;
@@ -24,7 +24,7 @@ public class ReportForm extends JFrame {
 
     final JFileChooser fileChooser;
 
-    ReportForm(PosgtresDB db) {
+    RaspForm(PosgtresDB db) {
         this.db = db;
         setLayout(null);
         setVisible(true);
