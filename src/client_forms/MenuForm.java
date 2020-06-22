@@ -16,7 +16,7 @@ public class MenuForm extends JFrame {
         getContentPane().setBackground(Color.orange);
         setLayout(null);
         setSize(300, 450);
-        setTitle("Приложение Magistr");
+        setTitle("Magistr");
         setVisible(true);
 
         JButton btnConnect = new JButton("Подключиться к БД");
