@@ -22,7 +22,7 @@ public class TeachersForm extends JFrame {
         setVisible(true);
         setTitle("Распределение преподователей / «Приложение Magistr»");
         setSize(780, 550);
-        getContentPane().setBackground(Color.cyan);
+        getContentPane().setBackground(Color.orange);
 
         JLabel lblLoad1 = new JLabel("Нажмите, чтобы загрузить данные из БД");
         lblLoad1.setBounds(10, 320, 270, 20);

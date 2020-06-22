@@ -13,7 +13,7 @@ public class MenuForm extends JFrame {
         this.db = new PosgtresDB();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getContentPane().setBackground(Color.cyan);
+        getContentPane().setBackground(Color.orange);
         setLayout(null);
         setSize(300, 450);
         setTitle("Приложение Magistr");
@@ -28,11 +28,11 @@ public class MenuForm extends JFrame {
         add(btnStuds);
 
         JButton btnDocs = new JButton("Учетные карточки и ЗК");
-        btnDocs.setBounds(50, 70, 200, 20);
+        btnDocs.setBounds(50, 110, 200, 20);
         add(btnDocs);
 
         JButton btnRaspr = new JButton("Формирование группы");
-        btnRaspr.setBounds(50, 110, 200, 20);
+        btnRaspr.setBounds(50, 70, 200, 20);
         add(btnRaspr);
 
         JButton btnPrepod = new JButton("Закрепление преподавателя");

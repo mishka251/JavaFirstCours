@@ -26,7 +26,7 @@ public class RaspredForm extends JFrame {
         setLayout(null);
         setVisible(true);
         setTitle("Формирование групп / «Приложение Magistr»");
-        getContentPane().setBackground(Color.cyan);
+        getContentPane().setBackground(Color.orange);
         setSize(500, 450);
         try {
             Map<String, ArrayList<Object>> specTable = db.select("speciality");

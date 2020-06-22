@@ -162,7 +162,7 @@ public class DbTableForm extends JFrame {
         String deleteField = (String) cmbDeleteField.getSelectedItem();
         if (deleteCondition == null || deleteCondition.equals("")
                 || deleteField == null || deleteField.equals("")) {
-            JOptionPane.showMessageDialog(this, "Введите фамилию кого удалять");
+            JOptionPane.showMessageDialog(this, "Введите значение для удаления");
             return;
         }
         try {

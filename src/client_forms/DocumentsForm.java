@@ -22,7 +22,7 @@ public class DocumentsForm extends JFrame {
         setVisible(true);
         setTitle("Формирование учетных карточек и ЗК / «Приложение Magistr»");
         setSize(730, 450);
-        getContentPane().setBackground(Color.cyan);
+        getContentPane().setBackground(Color.orange);
 
         JLabel lblLoad1 = new JLabel("Нажмите, чтобы загрузить данные из БД");
         lblLoad1.setBounds(420, 30, 270, 20);
