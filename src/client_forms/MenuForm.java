@@ -23,7 +23,7 @@ public class MenuForm extends JFrame {
         btnConnect.setBounds(50, 10, 200, 20);
         add(btnConnect);
 
-        JButton btnStuds = new JButton("Запрос таблицы студентов");
+        JButton btnStuds = new JButton("Запрос таблицы магистрантов");
         btnStuds.setBounds(50, 40, 200, 20);
         add(btnStuds);
 

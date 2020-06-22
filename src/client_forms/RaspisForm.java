@@ -19,7 +19,7 @@ public class RaspisForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
-        setTitle("Расписание/ Приложение Magistr");
+        setTitle("Расписание");
         setSize(780, 550);
         getContentPane().setBackground(Color.orange);
 

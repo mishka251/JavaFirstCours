@@ -25,7 +25,7 @@ public class RaspredForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
-        setTitle("Формирование групп / «Приложение Magistr»");
+        setTitle("Формирование групп");
         getContentPane().setBackground(Color.orange);
         setSize(500, 450);
         try {

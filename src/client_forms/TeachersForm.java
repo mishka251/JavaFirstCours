@@ -20,7 +20,7 @@ public class TeachersForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
-        setTitle("Распределение преподователей / «Приложение Magistr»");
+        setTitle("Распределение руководителя");
         setSize(780, 550);
         getContentPane().setBackground(Color.orange);
 
