@@ -84,6 +84,7 @@ public class Main {
                         new TableColumn("group_id", "INTEGER", "REFERENCES [group] (id)"),
                         new TableColumn("teacher_id", "INTEGER", "REFERENCES teacher (id)"),
                         new TableColumn("para", "INTEGER"),
+                        new TableColumn("week_day", "INTEGER"),
                 });
 
         db.createTable("student_card",
@@ -262,7 +263,7 @@ public class Main {
 
     static void createTeacher(PosgtresDB db) throws SQLException {
         Random r = new Random();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 15; i++) {
             db.insert("teacher",
                     new String[]{
                             "name",
@@ -276,11 +277,11 @@ public class Main {
                             getRandomSurname(),
                             getRandomPatronymic(),
                             1,
-                            r.nextInt(2)
+                            r.nextInt(2)+1
                     });
         }
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             db.insert("teacher",
                     new String[]{
                             "name",
@@ -294,7 +295,7 @@ public class Main {
                             getRandomSurname(),
                             getRandomPatronymic(),
                             2,
-                            r.nextInt(2)
+                            r.nextInt(2)+1
                     });
         }
     }

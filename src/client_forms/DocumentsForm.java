@@ -20,7 +20,7 @@ public class DocumentsForm extends JFrame {
         abiturs = new ArrayList<>();
         setLayout(null);
         setVisible(true);
-        setTitle("Формирование учетных карточек и ЗК / «Contingent»");
+        setTitle("Формирование учетных карточек и ЗК / «Приложение Magistr»");
         setSize(730, 450);
         getContentPane().setBackground(Color.cyan);
 

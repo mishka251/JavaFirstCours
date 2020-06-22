@@ -16,7 +16,7 @@ public class MenuForm extends JFrame {
         getContentPane().setBackground(Color.cyan);
         setLayout(null);
         setSize(300, 450);
-        setTitle("contingent");
+        setTitle("Приложение Magistr");
         setVisible(true);
 
         JButton btnConnect = new JButton("Подключиться к БД");
@@ -41,7 +41,7 @@ public class MenuForm extends JFrame {
 
 
         JButton btnReport = new JButton("Формирование расписания");
-        btnReport.setBounds(50, 70, 200, 20);
+        btnReport.setBounds(50, 170, 200, 20);
         add(btnReport);
 
         btnConnect.addActionListener((event) -> connect());
@@ -78,7 +78,7 @@ public class MenuForm extends JFrame {
     }
 
     void showRasp() {
-        new RaspForm(db);
+        new RaspisForm(db);
     }
 
 }
